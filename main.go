@@ -110,6 +110,9 @@ func (dualis *Dualis) pollGrades(config *Config) {
 			dualis.sendNotification(&updatedModules, config)
 		}
 
+		if config.UpdateIntervalMinutes > 0 {
+			break;
+		}
 		time.Sleep(time.Duration(config.UpdateIntervalMinutes) * time.Minute)
 	}
 }
