@@ -102,7 +102,6 @@ func (dualis *Dualis) pollGrades(config *Config) {
 	log.Printf("Scheduled polling for grades (Every %v minute(s)).\n", config.UpdateIntervalMinutes)
 
 	for {
-		time.Sleep(time.Duration(config.UpdateIntervalMinutes) * time.Minute)
 		log.Println("Polling for new grades.")
 		updatedModules := dualis.updateModules()
 
@@ -110,6 +109,8 @@ func (dualis *Dualis) pollGrades(config *Config) {
 			log.Println("No new grades discovered.")
 			dualis.sendNotification(&updatedModules, config)
 		}
+
+		time.Sleep(time.Duration(config.UpdateIntervalMinutes) * time.Minute)
 	}
 }
 
