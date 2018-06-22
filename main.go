@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -77,7 +78,10 @@ const (
 
 func main() {
 	// Load config file
-	config, _ := parseConfig("config.json")
+	configPath := flag.String("c", "config.json", "Path to the config file")
+	flag.Parse()
+
+	config, _ := parseConfig(*configPath)
 
 	jar, _ := cookiejar.New(nil)
 	client := &http.Client{
@@ -167,7 +171,7 @@ func (dualis *Dualis) updateModules() (updatedModules []Module) {
 func parseConfig(filename string) (cfg *Config, ok bool) {
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
-		log.Fatal("Could not open config file.")
+		log.Fatal("Could not open config file: ", filename)
 		return nil, false
 	}
 
