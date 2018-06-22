@@ -31,3 +31,7 @@ When using the mail server provided by the DHBW, you have to enter the following
 "SMTPUsername": "itXXXXX",
 "SMTPPassword": "XXXXXXXXXXXXX",
 ```
+
+## Building with nix
+Just install [nix](https://nixos.org/nix/download.html) and run `nix-build`.
+Your binary will be at `result-bin/bin/dhbw-gradifier`.
