@@ -6,7 +6,7 @@ buildGoPackage rec {
 
   goPackagePath = "github.com/mariuskiessling/dhbw-gradifier";
 
-  src = ./.;
+  src = ./..;
   #src = fetchFromGitHub {
   #  owner  = "mariuskiessling";
   #  repo   = "dhbw-gradifier";

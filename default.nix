@@ -1,2 +1,2 @@
-with import ./nixpkgs.nix;
-callPackage ./dhbw-gradifier.nix {}
+with import ./nix/nixpkgs.nix;
+callPackage ./nix/dhbw-gradifier.nix {}

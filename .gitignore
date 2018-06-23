@@ -8,3 +8,7 @@ config.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# nix
+result-bin
+result
