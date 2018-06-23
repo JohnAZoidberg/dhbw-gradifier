@@ -46,7 +46,10 @@ let
   rev = "7c68974d16342bb4f3b5d133d7159816d7b412d6";
   sha256 = "0w2j97rya2mb6qmcmznqq2r3rh28ahkp5a8rh22wc2p4pjnm4xvj";
 
-  repo = fetchTarball {
+  # Use builtins.fetchTarball instead of pkgs.fetchFromGitHub because
+  # the result is listed in the `imports` which cannot contain entries
+  # That are dependent on config or pkgs
+  repo = builtins.fetchTarball {
     url = "https://github.com/JohnAZoidberg/dhbw-gradifier/archive/${rev}.tar.gz";
     inherit sha256;
   };
