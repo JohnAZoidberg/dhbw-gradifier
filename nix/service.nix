@@ -116,9 +116,12 @@ in
       "dhbw-gradifier-${username}"
       {
         description = "Timer to poll grades for ${username}";
+        enable = true;
+        wantedBy = [ "timers.target" ];
         timerConfig = {
           Unit = "dhbw-gradifier@${username}.service";
           OnActiveSec = "${toString student.updateInterval}min";
+          OnBootSec = "${toString student.updateInterval}min";
         };
       }
     );
