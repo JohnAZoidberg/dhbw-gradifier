@@ -35,3 +35,67 @@ When using the mail server provided by the DHBW, you have to enter the following
 ## Building with nix
 Just install [nix](https://nixos.org/nix/download.html) and run `nix-build`.
 Your binary will be at `result-bin/bin/dhbw-gradifier`.
+
+## Using NixOS for deployment
+Put the following config options in your system config or create a file
+out of it and import that.
+
+```nix
+{ config, pkgs, ... }:
+let
+  rev = "7c68974d16342bb4f3b5d133d7159816d7b412d6";
+  sha256 = "0w2j97rya2mb6qmcmznqq2r3rh28ahkp5a8rh22wc2p4pjnm4xvj";
+
+  repo = fetchTarball {
+    url = "https://github.com/JohnAZoidberg/dhbw-gradifier/archive/${rev}.tar.gz";
+    inherit sha256;
+  };
+in
+{
+  # Make dhbw-gradifier service config available
+  imports = [
+    "${repo}/service.nix"
+  ];
+
+  # Install it in your PATH (if you want)
+  #environment.systemPackages = [ pkg.dhbw-gradifier ];
+
+  # Include dhbw-gradifier pkgs into nixpgks tree
+  nixpkgs.overlays = [
+    (self: super: {
+      dhbw-gradifier = super.callPackage "${repo}/dhbw-gradifier.nix" {};
+    })
+  ];
+
+  # Configure which students' grades get fetched and sent to whom
+  services.dhbw-gradifier = {
+    enable = true;
+
+    students = {
+      "it9876" = {
+        password = "pa$sw0rd";
+        # updateInterval = 25; # minutes default
+        # Everything inferred from dualis credentials
+        # notificationRecipient = "it1234@example.com";
+        # notificationSmtp = {
+        #   host = "lehre-mail.dhbw-stuttgart.de";
+        #   port = 587;
+        #   username = "it1234";
+        #   password = "pa$sw0rd";
+        # };
+      };
+      "it1234" = {
+        password = "123";
+        updateInterval = 5;
+        notificationRecipient = "it1234@example.com";
+        notificationSmtp = {
+          host = "mail.example.com";
+          port = 587;
+          username = "user1234";
+          password = "pa$sw0rd";
+        };
+      };
+    };
+  };
+}
+```
