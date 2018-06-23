@@ -83,7 +83,7 @@ in
       ({
         text = ''
           {
-            "username": "${username}",
+            "username": "${username}@lehre.dhbw-stuttgart.de",
             "password": "${student.password}",
 
             ${if student.notificationSmtp == null
