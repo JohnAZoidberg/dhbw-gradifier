@@ -90,7 +90,7 @@ in
               then ''
                 "SMTPHost": "lehre-mail.dhbw-stuttgart.de",
                 "SMTPPort": 587,
-                "SMTPUsername": "${username}",
+                "SMTPUsername": "${username}@lehre.dhbw-stuttgart.de",
                 "SMTPPassword": "${student.password}",
               ''
               else ''
