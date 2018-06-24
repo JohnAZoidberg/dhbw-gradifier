@@ -32,10 +32,16 @@ When using the mail server provided by the DHBW, you have to enter the following
 "SMTPPassword": "XXXXXXXXXXXXX",
 ```
 
-## Location of config
+## Location of config and template
 By default `dhbw-gradifier` tries to load the config from `config.json` in the directory you run it from.
 You can override this by providing an alternative path using the environment variable `DHBW_GRADIFIER_CONFIG`
 or by using the commandline flag `-c=config.json`.
+
+By default the template is loaded from the `notification.tpl` which is next to
+the executed binary. If there is `/etc/dhbw-gradifier/notification.tpl` that
+will be used instead. Alternatively you can use the environment variable
+`DHBW_GRADIFIER_TEMPLATE` to set your own template. The flag `-t` overrides
+all other locations.
 
 ## Building with nix
 Just install [nix](https://nixos.org/nix/download.html) and run `nix-build`.

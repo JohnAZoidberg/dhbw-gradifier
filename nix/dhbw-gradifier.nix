@@ -14,6 +14,10 @@ buildGoPackage rec {
   #  sha256 = "0q55zlgn0zsjjx7psdh7wy4gv88bfnhbckbmz70d6wyanzwhjxnw";
   #};
 
+  postInstall = ''
+    cp $src/notification.tpl $bin/bin
+  '';
+
   goDeps = ./deps.nix;
 
   meta = with stdenv.lib; {

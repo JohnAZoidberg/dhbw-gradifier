@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"path"
 	"reflect"
 	"regexp"
 	"strings"
@@ -38,6 +39,7 @@ type Config struct {
 	SMTPPassword          string
 	NotificationRecipient string
 	UpdateIntervalMinutes int
+	TemplatePath          string
 }
 
 type Semester struct {
@@ -79,14 +81,16 @@ const (
 
 func main() {
 	// Load config file
-	defaultPath := os.Getenv("DHBW_GRADIFIER_CONFIG")
-	if defaultPath == "" {
-		defaultPath = "config.json"  // relative to current working directory
+	envConfigPath := os.Getenv("DHBW_GRADIFIER_CONFIG")
+	if envConfigPath == "" {
+		envConfigPath= "config.json"  // relative to current working directory
 	}
-	configPath := flag.String("c", defaultPath, "Path to the config file")
+	configPath := flag.String("c", envConfigPath, "Path to the config file")
+	templatePath := flag.String("t", "", "Path to the template file")
 	flag.Parse()
 
 	config, _ := parseConfig(*configPath)
+	config.TemplatePath = *templatePath
 
 	jar, _ := cookiejar.New(nil)
 	client := &http.Client{
@@ -128,10 +132,40 @@ func (dualis *Dualis) pollGrades(config *Config) {
 
 func (dualis *Dualis) sendNotification(modules *[]Module, config *Config) {
 	log.Printf("Sending notification for %v modules.\n", len(*modules))
+	var tpl *template.Template
+	var err error
 
-	tpl, err := template.ParseFiles("notification.tpl")
-	if err != nil {
-		panic(err)
+    /*
+      Highest priority: commandline arg (fails if cannot read)
+      Second priority:  environment variable (fails if cannot read)
+      Third priority:   /etc/dhbw-gradifier/notification.tpl
+                        Skips if cannot read because it was not explicitly
+                        set by the user and therefore is not important.
+      Least priority:   relative to binary path (fails if cannot read)
+    */
+
+	if config.TemplatePath == "" {
+		config.TemplatePath = os.Getenv("DHBW_GRADIFIER_TEMPLATE")
+	}
+	if config.TemplatePath == "" {
+		config.TemplatePath = "/etc/dhbw-gradifier/notification.tpl"
+		tpl, err = template.ParseFiles(config.TemplatePath)
+
+		if err != nil {
+			config.TemplatePath = path.Join(path.Dir(os.Args[0]), "notification.tpl")
+			tpl, err = template.ParseFiles(config.TemplatePath)
+
+			if err != nil {
+				log.Fatal("Could not load template at %d", config.TemplatePath)
+				panic(err)
+			}
+		}
+	} else {
+		tpl, err = template.ParseFiles(config.TemplatePath)
+		if err != nil {
+			log.Fatal("Could not load template at %d", config.TemplatePath)
+			panic(err)
+		}
 	}
 
 	var body bytes.Buffer
