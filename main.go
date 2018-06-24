@@ -15,6 +15,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"os"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/yhat/scrape"
@@ -78,7 +79,11 @@ const (
 
 func main() {
 	// Load config file
-	configPath := flag.String("c", "config.json", "Path to the config file")
+	defaultPath := os.Getenv("DHBW_GRADIFIER_CONFIG")
+	if defaultPath == "" {
+		defaultPath = "config.json"  // relative to current working directory
+	}
+	configPath := flag.String("c", defaultPath, "Path to the config file")
 	flag.Parse()
 
 	config, _ := parseConfig(*configPath)

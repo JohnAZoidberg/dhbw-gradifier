@@ -32,6 +32,11 @@ When using the mail server provided by the DHBW, you have to enter the following
 "SMTPPassword": "XXXXXXXXXXXXX",
 ```
 
+## Location of config
+By default `dhbw-gradifier` tries to load the config from `config.json` in the directory you run it from.
+You can override this by providing an alternative path using the environment variable `DHBW_GRADIFIER_CONFIG`
+or by using the commandline flag `-c=config.json`.
+
 ## Building with nix
 Just install [nix](https://nixos.org/nix/download.html) and run `nix-build`.
 Your binary will be at `result-bin/bin/dhbw-gradifier`.
